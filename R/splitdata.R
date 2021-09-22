@@ -17,12 +17,17 @@ ADToRatio <- function(strAD) {
 #' @export
 ADToRatio <- Vectorize(ADToRatio)
 
+SplitEqual <- function(string) {
+    string %>%
+        str_split(pattern = "=", simplify = TRUE) %>%
+        return()
+}
+
 ConvertToTibble <- function(string) {
     convertedDataFrame <- string %>% 
-                            str_split(pattern = ";") %>%
-                            sapply(FUN = str_split, pattern = "=") %>%
-                            sapply(unlist) %>%
-                            as.data.frame()
+        str_split(pattern = ";", simplify = TRUE) %>%
+        apply(2, SplitEqual) %>%
+        as.data.frame()
     colnames(convertedDataFrame) <- convertedDataFrame[1, ]
     return(convertedDataFrame[-1,])
 }
@@ -34,8 +39,8 @@ vec_ConvertToTibble <- Vectorize(ConvertToTibble)
 ExtractINFO <- function (target_table) {
     info_table <- target_table$INFO %>%
         as.list() %>%
-        map(ConvertToTibble) %>%
-        join_all(type="full")
+        map(ConvertToTibble)
+    info_table <- suppressMessages(join_all(info_table, type="full"))
     target_table %>%
         cbind(info_table) %>%
         as_tibble()  %>%
