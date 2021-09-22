@@ -1,3 +1,11 @@
+ADToRatio <- function(strAD) {
+    vec_ad <- strAD %>%
+        str_split(",") %>%
+        unlist() %>%
+        as.numeric()
+    return(vec_ad[2] / sum(vec_ad))
+}
+
 #' Return heteroplasmy from value of AD.
 #' @param strAD Value of AD as string.
 #' @return Heteroplasmy as double.
@@ -7,14 +15,6 @@
 #' @importFrom plyr join_all
 #' @importFrom tidyr as_tibble
 #' @export
-ADToRatio <- function(strAD) {
-    vec_ad <- str_ad %>%
-        str_split(",") %>%
-        unlist() %>%
-        as.numeric()
-    return(vec_ad[2] / sum(vec_ad))
-}
-
 ADToRatio <- Vectorize(ADToRatio)
 
 ConvertToTibble <- function(string) {
@@ -28,6 +28,9 @@ ConvertToTibble <- function(string) {
 }
 vec_ConvertToTibble <- Vectorize(ConvertToTibble)
 
+#' Extract each values from INFO section.
+#' @param target_table table from VCF file.
+#' @export
 ExtractINFO <- function (target_table) {
     info_table <- target_table$INFO %>%
         as.list() %>%

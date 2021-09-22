@@ -1,11 +1,11 @@
 Package: VCFInfo
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Extract values from "INFO" column
 Version: 0.1.0
 Author: Ryosuke Matsuzawa
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Maintainer: Ryosuke Matsuzawa <kinakomochi.work@gmail.com>
+Description: This package provides functions which are available to handle
+  VCF file as tibble.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
