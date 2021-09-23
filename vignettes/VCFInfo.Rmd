@@ -1,0 +1,8 @@
+---
+title: "VCFInfo"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{VCFInfo}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
