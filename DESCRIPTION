@@ -2,8 +2,12 @@ Package: VCFInfo
 Type: Package
 Title: Extract values from "INFO" column
 Version: 0.1.0
-Author: Ryosuke Matsuzawa
-Maintainer: Ryosuke Matsuzawa <kinakomochi.work@gmail.com>
+Authors@R: 
+    person(given = "Ryosuke",
+           family = "Matsuzawa",
+           role = c("aut", "cre"),
+           email = "kinakomochi.work@gmail.com",
+           comment = c(ORCID = "0000-0003-2999-4734"))
 Description: This package provides functions which are available to handle
   VCF file as tibble.
 License: MIT + file LICENSE
@@ -15,4 +19,6 @@ Imports:
     purrr,
     stringr,
     plyr,
-    tidyr
+    tidyr,
+    readr,
+    tibble
