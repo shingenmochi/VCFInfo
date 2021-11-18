@@ -1,6 +1,6 @@
 # VCFInfo
 
-`VCFInfo` package provides some functions for handling of VCF file.
+`VCFInfo` is an R package for handling VCF files. This package specializes in processing INFO columns.
 
 ## Install
 

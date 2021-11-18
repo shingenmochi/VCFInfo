@@ -12,7 +12,6 @@ ADToRatio <- function(strAD) {
 #' @importFrom dplyr %>%
 #' @importFrom stringr str_split
 #' @importFrom purrr map
-#' @importFrom plyr join_all
 #' @importFrom tidyr as_tibble
 #' @export
 ADToRatio <- Vectorize(ADToRatio)
@@ -31,15 +30,17 @@ ConvertToTibble <- function(string) {
     colnames(convertedDataFrame) <- convertedDataFrame[1, ]
     return(convertedDataFrame[-1,])
 }
-vec_ConvertToTibble <- Vectorize(ConvertToTibble)
 
 #' Extract each values from INFO section.
 #' @param target_table table from VCF file.
 #' @importFrom tibble as_tibble_col
 #' @importFrom tibble rownames_to_column
+#' @importFrom dplyr full_join
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
+#' @importFrom dplyr arrange
 #' @importFrom stringr str_c
+#' @importFrom stringr str_remove
 #' @export
 ExtractINFO <- function (target_table) {
     info_table <- target_table$INFO %>%
@@ -51,10 +52,15 @@ ExtractINFO <- function (target_table) {
     info_table <- info_table$retval %>%
         as.list() %>%
         map(ConvertToTibble)
-    info_table <- suppressMessages(join_all(info_table, type="full")) %>%
+    tmpTable <- info_table[[1]]
+    for (i in 2:length(info_table)) {
+        tmpTable <- suppressMessages(full_join(tmpTable, info_table[[i]]))
+    }
+    tmpTable <- tmpTable %>%
+        arrange("ID") %>%
         select(-"ID")
     target_table %>%
-        cbind(info_table) %>%
+        cbind(tmpTable) %>%
         as_tibble()  %>%
         return()
 }
@@ -64,10 +70,40 @@ ExtractINFO <- function (target_table) {
 #' @return Tibble object
 #' @importFrom stringr str_remove_all
 #' @importFrom readr read_tsv
+#' @importFrom dplyr filter
+#' @importFrom stringr str_starts
 #' @export
 VCFToTibble <- function(VCFFile) {
     retTibble <- read_tsv(VCFFile, comment = '##')
     colnames(retTibble) <- colnames(retTibble) %>%
         str_remove_all(pattern = '#')
     return(retTibble)
+}
+
+SearchSingleRow <- function(targetStr, query) {
+    queryPattern <- str_c(query, "=")
+    targetStr %>%
+        str_split(pattern = ";", simplify = T) %>%
+        t() %>%
+        as_tibble_col(column_name = "searchSingleRowInner") %>%
+        filter(str_starts(`searchSingleRowInner`, pattern = queryPattern)) %>%
+        as.character() %>%
+        str_remove(".*=") %>%
+        return()
+}
+
+#' Extract the specified element from INFO section.
+#' @param targetTibble Target table as tibble.
+#' @param query String. the element that you want to extract.
+#' @param colName Name of column that is being added.
+#' @export
+ExtractFromINFO <- function(targetTibble, query, colName = query) {
+    result <- targetTibble$INFO %>%
+        sapply(SearchSingleRow, query = query) %>%
+        as.vector() %>%
+        as_tibble_col(column_name = colName)
+    targetTibble %>%
+        cbind(result) %>%
+        as_tibble() %>%
+        return()
 }

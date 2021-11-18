@@ -1,7 +1,7 @@
 Package: VCFInfo
 Type: Package
 Title: Extract values from "INFO" column
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
     person(given = "Ryosuke",
            family = "Matsuzawa",
@@ -18,7 +18,6 @@ Imports:
     dplyr,
     purrr,
     stringr,
-    plyr,
     tidyr,
     readr,
     tibble
